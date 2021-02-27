@@ -14,5 +14,6 @@ int main() {
       exit(1);
   }
   f = (Func*)nodes[0];
+  //to_asm(node, 1, "test.s");
   printf("%s\n", f->name->value);
 }

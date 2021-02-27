@@ -10,7 +10,7 @@ extern int yyerror();
 %}
 
 %union {
-  Node node;
+  Node* node;
   int op;
 }
 
@@ -29,9 +29,9 @@ compilation_unit
 statements
   : empty
   | statement {
-    Statements* stmts = new_statements();
+    Statements* stmts = (Statements*) new_statements();
     Statements_add(stmts, $1);
-    $$ = stmts;
+    $$ = (Node*)stmts;
   }
   | statements statement {
     Statements_add((Statements*)$1, $2);
@@ -51,9 +51,9 @@ expression
 args
   : empty
   | arg {
-    Args* args = new_args();
+    Args* args = (Args*)new_args();
     Args_add((Args*)args, (Arg*)$1);
-    $$ = args;
+    $$ = (Node*)args;
   }
   | args ',' arg {
     Args_add((Args*)$1, (Arg*)$3);
