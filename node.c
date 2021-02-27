@@ -4,6 +4,8 @@
 #include "node.h"
 #define NEW_NODE(type) type* node = (type*) malloc(sizeof(type))
 
+Node nodes[255];
+
 Node new_ivalue(int value) {
   NEW_NODE(IValue);
   node->value = value;
@@ -49,6 +51,15 @@ Node new_statements() {
   return (Node)node;
 }
 
+Node new_binary_op(Node left, int operator_sim, Node right) {
+  NEW_NODE(BinaryExpression);
+  sscanf("BinaryExpression", "%s", node->node_type);
+  node->left = left;
+  node->operator_sim = operator_sim;
+  node->right = right;
+  return (Node)node;
+}
+
 void Statements_add(Statements* self, Node statement) {
   self->statements[self->length] = statement;
   self->length++;
@@ -57,4 +68,9 @@ void Statements_add(Statements* self, Node statement) {
 void Args_add(Args* self, Arg* arg) {
   self->args[self->length] = arg;
   self->length++;
+}
+
+void debug(Node node) {
+  Debug* d = (Debug*) node;
+  printf("%s\n", d->node_type);
 }

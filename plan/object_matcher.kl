@@ -1,0 +1,12 @@
+class Obj {
+  int i1
+  int i2
+}
+
+def match() {
+  obj = new Obj(1, 2)
+  case obj {
+    {i1: 1, i2: a} -> { print(i) }
+    _ -> { print("unmatch") }
+  }
+}

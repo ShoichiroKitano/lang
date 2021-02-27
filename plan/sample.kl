@@ -1,0 +1,40 @@
+package main # ファイルを置いてるdir名をつける。ルートの場合はmainをつける。
+
+import p1.p2.p3
+
+def main() {
+  c = new ClassName(1, 2)
+  Class c := new ClassName(1, 2)
+}
+
+class ClassName {
+
+  int i1
+  int i2
+
+  # コンストラクタは省略するとメンバを初期化するメソッドを自動生成
+  def ClassName(int i1, int i2) {
+  }
+
+  def method() int {
+  }
+
+  def voidMethod() {
+  }
+}
+
+# intをラップしたValueObjectを生成
+vclass int ValueObj {
+  # 以下は自動生成
+  # int value
+  #
+  # def ValueObj(int value) {
+  #   this.value = value
+  # }
+}
+
+class Del {
+  # del宣言で指定したインスタンスに自動で委譲
+  del ClassName c
+}
+

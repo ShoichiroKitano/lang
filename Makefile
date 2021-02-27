@@ -5,7 +5,7 @@ exec: build exec_bin clean
 build:
 	yacc -dv parser.y
 	lex tokenizer.l
-	gcc node.c y.tab.c lex.yy.c
+	gcc main.c node.c y.tab.c lex.yy.c
 
 exec_bin:
 	./a.out

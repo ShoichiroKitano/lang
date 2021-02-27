@@ -1,4 +1,5 @@
 #ifndef __NODE_H_
+#define __NODE_H_
 #define def_type(type, members) typedef struct type { members } type
 
 typedef void* Node;
@@ -26,11 +27,11 @@ def_type(Statements,
     Node statements[255];
     );
 
-def_type(Expression,
+def_type(BinaryExpression,
     char node_type[255];
-    void* op1;
-    char operator[255];
-    void* op2;
+    Node left;
+    int operator_sim;
+    Node right;
     );
 
 def_type(Args,
@@ -46,14 +47,19 @@ def_type(Func,
     Statements* body;
     );
 
+def_type(Debug,
+    char node_type[255];
+    );
 
 Node new_ivalue(int value);
 Node new_identifier(char *value);
 Node new_func(Identifier* name, Args* args, Statements* statements);
 Node new_arg(Identifier* type, Identifier* variable);
+Node new_binary_op();
 Node new_args();
 Node new_statements();
 void Statements_add(Statements* statements, Node statement);
 void Args_add(Args* args, Arg* arg);
+void debug(Node node);
 
 #endif
