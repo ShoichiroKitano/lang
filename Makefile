@@ -1,14 +1,15 @@
-.PHONY: clean build exec
+.PHONY: clean build_compiler exec
 
-exec: build exec_bin clean
+exec: build_compiler exec_bin
 
-build:
-	yacc -dv parser.y
-	lex tokenizer.l
-	gcc main.c node.c y.tab.c lex.yy.c
+build_compiler:
+	cd src/compiler; yacc -dv parser.y
+	cd src/compiler; lex tokenizer.l
+	gcc src/compiler/*.c -o bin/compiler
 
 exec_bin:
-	./a.out
+	./bin/compiler
 
 clean:
-	rm a.out y.tab.c lex.yy.c y.output y.tab.h
+	cd src/compiler; y.tab.c lex.yy.c y.output y.tab.h
+	cd bin; rm compier
