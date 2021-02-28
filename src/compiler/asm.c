@@ -44,7 +44,7 @@ void write_func(Func* func, FILE *file) {
         printf("return value fail %s\n", func->body->statements[i]->node_type);
       }
 
-      fprintf(file, "  pushq %%rbp\n");
+      fprintf(file, "  popq %%rbp\n");
       fprintf(file, "  retq\n");
     } else {
       printf("fail %s\n", func->body->statements[i]->node_type);
