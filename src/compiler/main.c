@@ -1,19 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "node.h"
+#include "asm.h"
 
 int yyparse();
 extern FILE *yyin;
 
 int main() {
-  Func* f;
-
   yyin = fopen("test.kl", "r");
   if (yyparse()) {
       fprintf(stderr, "Error ! Error ! Error !\n");
       exit(1);
   }
-  f = (Func*)nodes[0];
-  //to_asm(node, 1, "test.s");
-  printf("%s\n", f->name->value);
+  to_asm(nodes, 1, "test.s");
 }

@@ -40,6 +40,9 @@ statements
 
 statement
   : expression
+  | RETURN expression {
+    $$ = new_return($2);
+  }
 
 expression
   : INT_LITERAL

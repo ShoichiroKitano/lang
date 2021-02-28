@@ -48,7 +48,8 @@ def_node(Func,
     Statements* body;
     );
 
-def_node(Debug,
+def_node(Return,
+    Node* return_value;
     );
 
 Node* new_ivalue(int value);
@@ -58,6 +59,7 @@ Node* new_arg(Identifier* type, Identifier* variable);
 Node* new_binary_op();
 Node* new_args();
 Node* new_statements();
+Node* new_return();
 void Statements_add(Statements* statements, Node* statement);
 void Args_add(Args* args, Arg* arg);
 void debug(Node* node);
