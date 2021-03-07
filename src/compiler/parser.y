@@ -1,11 +1,12 @@
 %{
 #include <stdlib.h>
+#include <stdio.h>
 #include "node.h"
 #include "y.tab.h"
-#define YYDEBUG 1
+// #define YYDEBUG 1
 
 extern int yylex();
-extern int yyerror();
+extern int yyerror(char const *str);
 
 %}
 

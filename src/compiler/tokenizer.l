@@ -3,11 +3,18 @@
 #include "node.h"
 #include "y.tab.h"
 
-int
-yywrap(void)
-{
+#ifdef __cplusplus
+  extern "C" {
+#endif
+
+int yywrap(void) {
     return 1;
 }
+
+#ifdef __cplusplus
+  }
+#endif
+
 %}
 %%
 

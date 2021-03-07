@@ -3,7 +3,7 @@
 #include "asm.h"
 #include "sym_table.h"
 
-int is_node_type(char* a, char* b) {
+int is_node_type(const char* a, const char* b) {
   return strcmp(a, b) == 0;
 }
 
