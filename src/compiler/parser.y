@@ -1,8 +1,8 @@
 %{
 #include <stdlib.h>
 #include <stdio.h>
-#include "node.h"
-#include "y.tab.h"
+#include "compiler/node.h"
+#include "compiler/y.tab.h"
 // #define YYDEBUG 1
 
 extern int yylex();

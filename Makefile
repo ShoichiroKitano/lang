@@ -11,7 +11,7 @@ build_compiler:
 	$(shell test ! -e bin && mkdir bin)
 	cd src/compiler; yacc -dv parser.y
 	cd src/compiler; lex tokenizer.l
-	gcc src/compiler/*.c -o bin/compiler
+	gcc -I./src src/compiler/*.c src/util/*.c -o bin/compiler
 
 compiler_test: build_compiler_test
 	./bin/compiler_test

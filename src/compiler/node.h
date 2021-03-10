@@ -1,5 +1,6 @@
-#ifndef __NODE_H_
-#define __NODE_H_
+#ifndef __NODE_H
+#define __NODE_H
+
 #define def_node(type, members) \
   typedef struct type { \
     char node_type[255]; \

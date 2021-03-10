@@ -1,7 +1,7 @@
 %{
 #include <stdio.h>
-#include "node.h"
-#include "y.tab.h"
+#include "compiler/node.h"
+#include "compiler/y.tab.h"
 
 #ifdef __cplusplus
   extern "C" {

@@ -1,5 +1,5 @@
-#ifndef __SYM_TABLE__
-#define __SYM_TABLE__
+#ifndef __SYM_TABLE_H
+#define __SYM_TABLE_H
 
 typedef struct {
   char type[255];

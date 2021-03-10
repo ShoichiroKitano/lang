@@ -9,7 +9,7 @@ Array* Array_new(int cap) {
   return self;
 }
 
-Array* create_array(int cap) {
+Array* create_array() {
   return Array_new(255);
 }
 

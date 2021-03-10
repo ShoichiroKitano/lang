@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "node.h"
+#include "compiler/node.h"
 #define NEW_NODE(type) type* node = (type*) malloc(sizeof(type)); \
   sscanf(#type, "%s", node->node_type);
 

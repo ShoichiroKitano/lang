@@ -1,10 +1,21 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include "asm.h"
-#include "sym_table.h"
+#include "compiler/asm.h"
+#include "compiler/sym_table.h"
+#include "assembler/ast.h"
 
 int is_node_type(const char* a, const char* b) {
   return strcmp(a, b) == 0;
+}
+
+Directive* globl_directive(const char func_name[]) {
+  Directive* self = malloc(sizeof(Directive));
+  Operands* ops = Operands_new();
+  Symbol* sym = malloc(sizeof(Symbol));
+  strcpy(self->name, ".globl");
+  Operands_add(ops, sym);
+  return self;
 }
 
 void write_func(Func* func, FILE *file) {
@@ -13,8 +24,14 @@ void write_func(Func* func, FILE *file) {
   VarSymbol var;
   BinaryExpression *be;
   Return *stmt;
+  AST* asm_asts[255];
+  Directive directive = {".globl"};
+  int length = 0;
 
   fprintf(file, ".globl %s\n", func->name->value);
+  asm_asts[length] = (AST*) globl_directive(func->name->value);
+  length++;
+
   fprintf(file, ".p2align 4, 0x90\n");
   fprintf(file, "%s:\n", func->name->value);
   fprintf(file, "  pushq %%rbp\n");

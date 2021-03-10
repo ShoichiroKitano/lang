@@ -5,7 +5,7 @@
 
 #include <criterion/criterion.h>
 #include <stdio.h>
-#include "asm.h"
+#include "compiler/asm.h"
 
 int yyparse();
 extern FILE *yyin;

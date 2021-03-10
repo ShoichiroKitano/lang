@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "node.h"
-#include "asm.h"
+#include "compiler/node.h"
+#include "compiler/asm.h"
 
 int yyparse();
 extern FILE *yyin;
