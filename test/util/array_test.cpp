@@ -10,8 +10,8 @@ Test(Array, add) {
   Array_add(a, &i2);
   Array_add(a, &i3);
   cr_expect_eq(*(int*)Array_get(a, 0), 1);
-  cr_expect_eq(*(int*)Array_get(a, 2), 2);
-  cr_expect_eq(*(int*)Array_get(a, 3), 3);
+  cr_expect_eq(*(int*)Array_get(a, 1), 2);
+  cr_expect_eq(*(int*)Array_get(a, 2), 3);
   cr_expect_eq(a->len, 3);
   cr_expect_eq(a->cap, 4);
   Array_destroy(a);
