@@ -5,12 +5,12 @@
 #include "compiler/sym_table.h"
 #include "assembler/ast.h"
 
-int is_node_type(const char* a, const char* b) {
+static int is_node_type(const char* a, const char* b) {
   return strcmp(a, b) == 0;
 }
 
 // .global SYMBL
-Directive* globl(const char func_name[]) {
+static Directive* globl(const char func_name[]) {
   Directive* self = Directive_new();
   self->operands = Operands_new();
   strcpy(self->name, ".globl");
@@ -19,12 +19,29 @@ Directive* globl(const char func_name[]) {
 }
 
 // .p2align 4, 0x90
-Directive* func_p2align() {
+static Directive* func_p2align() {
   Directive* self = Directive_new();
   strcpy(self->name, ".p2align");
   self->operands = Operands_new();
   Operands_add(self->operands, IntIm_new("4"));
   Operands_add(self->operands, HexIm_new("0x90"));
+  return self;
+}
+
+static Mnemonic* mnemonic1(const char name[], AST* operand) {
+  Mnemonic* self = Mnemonic_new();
+  strcpy(self->name, name);
+  self->operands = Operands_new();
+  Operands_add(self->operands, operand);
+  return self;
+}
+
+static Mnemonic* mnemonic2(const char name[], AST* operand1, AST* operand2) {
+  Mnemonic* self = Mnemonic_new();
+  strcpy(self->name, name);
+  self->operands = Operands_new();
+  Operands_add(self->operands, operand1);
+  Operands_add(self->operands, operand2);
   return self;
 }
 
@@ -43,13 +60,25 @@ void write_func(Func* func, FILE* file) {
   asm_asts[length] = (AST*) func_p2align();
   length++;
 
+  asm_asts[length] = (AST*) Label_new(func->name->value);
+  length++;
+
+  asm_asts[length] = (AST*) mnemonic1("pushq", (AST*)Register_new("rbp"));
+  length++;
+
+  asm_asts[length] = (AST*) mnemonic2(
+      "movq",
+      (AST*)Register_new("rsp"),
+      (AST*)Register_new("rbp")
+      );
+  length++;
+
   for(i = 0; i < length; i++) {
     AST_write(asm_asts[i], file);
   }
 
-  fprintf(file, "%s:\n", func->name->value);
-  fprintf(file, "  pushq %%rbp\n");
-  fprintf(file, "  movq %%rsp, %%rbp\n");
+  //fprintf(file, "  pushq %%rbp\n");
+  //fprintf(file, "  movq %%rsp, %%rbp\n");
 
   sym_table.vsyms_length = 0;
   //引数をテーブルに追加

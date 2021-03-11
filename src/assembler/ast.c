@@ -31,6 +31,26 @@ Directive* Directive_new() {
   return self;
 }
 
+static void Mnemonic_write(AST* self, FILE* file) {
+  int i;
+  Mnemonic* mn = (Mnemonic*) self;
+  AST* a;
+
+  fprintf(file, "  %s ", mn->name);
+  for(i = 0; i < Operands_len(mn->operands); i++) {
+    a = (AST*)Operands_get(mn->operands, i);
+    a->write(a, file);
+    if(i != Operands_len(mn->operands) - 1) fprintf(file, ", ");
+  }
+  fprintf(file, "\n");
+}
+
+Mnemonic* Mnemonic_new() {
+  Mnemonic* self = (Mnemonic*)malloc(sizeof(Mnemonic));
+  strcpy(self->type, "Mnemonic");
+  self->write = Mnemonic_write;
+  return self;
+}
 static void Symbol_write(AST* self, FILE* file) {
   fprintf(file, "%s", ((Symbol*)self)->value);
 }
@@ -63,6 +83,30 @@ HexIm* HexIm_new(const char value[]) {
   HexIm* self = (HexIm*)malloc(sizeof(HexIm));
   strcpy(self->type, "HexIm");
   self->write = HexIm_write;
+  strcpy(self->value, value);
+  return self;
+}
+
+static void Label_write(AST* self, FILE* file) {
+  fprintf(file, "%s:\n", ((Label*)self)->value);
+}
+
+Label* Label_new(const char value[]) {
+  Label* self = (Label*)malloc(sizeof(Label));
+  strcpy(self->type, "Label");
+  self->write = Label_write;
+  strcpy(self->value, value);
+  return self;
+}
+
+static void Register_write(AST* self, FILE* file) {
+  fprintf(file, "%%%s", ((Register*)self)->value);
+}
+
+Register* Register_new(const char value[]) {
+  Register* self = (Register*)malloc(sizeof(Register));
+  strcpy(self->type, "Register");
+  self->write = Register_write;
   strcpy(self->value, value);
   return self;
 }
