@@ -11,7 +11,7 @@ build_compiler:
 	$(shell test ! -e bin && mkdir bin)
 	cd src/compiler; yacc -dv parser.y
 	cd src/compiler; lex tokenizer.l
-	gcc -I./src src/compiler/*.c src/util/*.c -o bin/compiler
+	gcc -I./src src/compiler/*.c src/util/*.c src/assembler/*.c -o bin/compiler
 
 compiler_test: build_compiler_test
 	./bin/compiler_test
@@ -20,7 +20,7 @@ build_compiler_test:
 	$(shell test ! -e bin && mkdir bin)
 	cd src/compiler; yacc -dv parser.y
 	cd src/compiler; lex tokenizer.l
-	g++ -lcriterion -I./src $(shell find ./src/compiler -name *.c | grep -vE 'main.c|y.tab.c|lex.yy.c') $(COMPILER_DIR)/y.tab.c $(COMPILER_DIR)/lex.yy.c test/compiler/*.cpp -o bin/compiler_test
+	g++ -lcriterion -I./src $(shell find ./src/compiler -name *.c | grep -vE 'main.c|y.tab.c|lex.yy.c') $(COMPILER_DIR)/y.tab.c $(COMPILER_DIR)/lex.yy.c src/util/*.c src/assembler/*.c test/compiler/*.cpp -o bin/compiler_test
 
 util_test: build_util_test
 	./bin/util_test

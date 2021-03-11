@@ -9,30 +9,44 @@ int is_node_type(const char* a, const char* b) {
   return strcmp(a, b) == 0;
 }
 
-Directive* globl_directive(const char func_name[]) {
-  Directive* self = malloc(sizeof(Directive));
-  Operands* ops = Operands_new();
-  Symbol* sym = malloc(sizeof(Symbol));
+// .global SYMBL
+Directive* globl(const char func_name[]) {
+  Directive* self = Directive_new();
+  self->operands = Operands_new();
   strcpy(self->name, ".globl");
-  Operands_add(ops, sym);
+  Operands_add(self->operands, Symbol_new(func_name));
   return self;
 }
 
-void write_func(Func* func, FILE *file) {
+// .p2align 4, 0x90
+Directive* func_p2align() {
+  Directive* self = Directive_new();
+  strcpy(self->name, ".p2align");
+  self->operands = Operands_new();
+  Operands_add(self->operands, IntIm_new("4"));
+  Operands_add(self->operands, HexIm_new("0x90"));
+  return self;
+}
+
+void write_func(Func* func, FILE* file) {
   int i;
   SymTable sym_table;
   VarSymbol var;
   BinaryExpression *be;
   Return *stmt;
   AST* asm_asts[255];
-  Directive directive = {".globl"};
   int length = 0;
 
-  fprintf(file, ".globl %s\n", func->name->value);
-  asm_asts[length] = (AST*) globl_directive(func->name->value);
+  asm_asts[length] = (AST*) globl(func->name->value);
   length++;
 
-  fprintf(file, ".p2align 4, 0x90\n");
+  asm_asts[length] = (AST*) func_p2align();
+  length++;
+
+  for(i = 0; i < length; i++) {
+    AST_write(asm_asts[i], file);
+  }
+
   fprintf(file, "%s:\n", func->name->value);
   fprintf(file, "  pushq %%rbp\n");
   fprintf(file, "  movq %%rsp, %%rbp\n");
