@@ -31,16 +31,24 @@ Directive* Directive_new() {
   return self;
 }
 
+static int is_numeric(AST *a) {
+  if(strcmp(a->type, "IntIm") == 0) return 1;
+  if(strcmp(a->type, "HexIm") == 0) return 1;
+  return 0;
+}
+
 static void Mnemonic_write(AST* self, FILE* file) {
   int i;
   Mnemonic* mn = (Mnemonic*) self;
   AST* a;
 
-  fprintf(file, "  %s ", mn->name);
+  fprintf(file, "  %s", mn->name);
   for(i = 0; i < Operands_len(mn->operands); i++) {
+    fprintf(file, " ");
     a = (AST*)Operands_get(mn->operands, i);
+    if(is_numeric(a)) fprintf(file, "$");
     a->write(a, file);
-    if(i != Operands_len(mn->operands) - 1) fprintf(file, ", ");
+    if(i != Operands_len(mn->operands) - 1) fprintf(file, ",");
   }
   fprintf(file, "\n");
 }

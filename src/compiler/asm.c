@@ -5,6 +5,9 @@
 #include "compiler/sym_table.h"
 #include "assembler/ast.h"
 
+DEF_FCC(AssemblerCode)
+DEF_FCC_IMPLE(AssemblerCode)
+
 static int is_node_type(const char* a, const char* b) {
   return strcmp(a, b) == 0;
 }
@@ -45,40 +48,26 @@ static Mnemonic* mnemonic2(const char name[], AST* operand1, AST* operand2) {
   return self;
 }
 
-void write_func(Func* func, FILE* file) {
+static Mnemonic* mnemonic0(const char name[]) {
+  Mnemonic* self = Mnemonic_new();
+  strcpy(self->name, name);
+  self->operands = Operands_new();
+  return self;
+}
+
+void write_func(Func* func, AssemblerCode* asms, FILE* file) {
   int i;
   SymTable sym_table;
   VarSymbol var;
   BinaryExpression *be;
   Return *stmt;
-  AST* asm_asts[255];
-  int length = 0;
+  char tmp[25];
 
-  asm_asts[length] = (AST*) globl(func->name->value);
-  length++;
-
-  asm_asts[length] = (AST*) func_p2align();
-  length++;
-
-  asm_asts[length] = (AST*) Label_new(func->name->value);
-  length++;
-
-  asm_asts[length] = (AST*) mnemonic1("pushq", (AST*)Register_new("rbp"));
-  length++;
-
-  asm_asts[length] = (AST*) mnemonic2(
-      "movq",
-      (AST*)Register_new("rsp"),
-      (AST*)Register_new("rbp")
-      );
-  length++;
-
-  for(i = 0; i < length; i++) {
-    AST_write(asm_asts[i], file);
-  }
-
-  //fprintf(file, "  pushq %%rbp\n");
-  //fprintf(file, "  movq %%rsp, %%rbp\n");
+  AssemblerCode_add(asms, globl(func->name->value));
+  AssemblerCode_add(asms, func_p2align());
+  AssemblerCode_add(asms, Label_new(func->name->value));
+  AssemblerCode_add(asms, mnemonic1("pushq", (AST*)Register_new("rbp")));
+  AssemblerCode_add(asms, mnemonic2("movq", (AST*)Register_new("rsp"), (AST*)Register_new("rbp")));
 
   sym_table.vsyms_length = 0;
   //引数をテーブルに追加
@@ -98,14 +87,15 @@ void write_func(Func* func, FILE* file) {
 
       if(is_node_type(stmt->return_value->node_type, "BinaryExpression")) {
         be = (BinaryExpression*) stmt->return_value;
-        fprintf(file, "  movl $%d, %%eax\n", ((IValue *)(be->left))->value);
-        fprintf(file, "  addl $%d, %%eax\n", ((IValue *)(be->right))->value);
+        sprintf(tmp, "%d", ((IValue *)(be->left))->value);
+        AssemblerCode_add(asms, mnemonic2("movl", (AST*)IntIm_new(tmp), (AST*)Register_new("eax")));
+        sprintf(tmp, "%d", ((IValue *)(be->right))->value);
+        AssemblerCode_add(asms, mnemonic2("addl", (AST*)IntIm_new(tmp), (AST*)Register_new("eax")));
       } else {
         printf("return value fail %s\n", func->body->statements[i]->node_type);
       }
-
-      fprintf(file, "  popq %%rbp\n");
-      fprintf(file, "  retq\n");
+      AssemblerCode_add(asms, mnemonic1("popq", (AST*)Register_new("rbp")));
+      AssemblerCode_add(asms, mnemonic0("retq"));
     } else {
       printf("fail %s\n", func->body->statements[i]->node_type);
     }
@@ -114,10 +104,15 @@ void write_func(Func* func, FILE* file) {
 
 void to_asm(Node** nodes, int size, char* file_name) {
   FILE *file;
+  int i;
+  AssemblerCode* asms = AssemblerCode_new();
 
   file = fopen(file_name, "w");
 
-  write_func((Func*)nodes[0], file);
+  write_func((Func*)nodes[0], asms, file);
+  for(i = 0; i < AssemblerCode_len(asms); i++) {
+    AST_write((AST*)AssemblerCode_get(asms, i), file);
+  }
 
   fclose(file);
 }
