@@ -8,7 +8,7 @@ typedef struct {
 } Array;
 
 Array* Array_new(int cap);
-Array* create_array();
+Array* Array_create();
 void Array_destroy(Array* self);
 void Array_add(Array* self, void* e);
 void* Array_get(Array* self, int i);

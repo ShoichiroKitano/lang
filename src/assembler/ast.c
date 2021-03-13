@@ -4,8 +4,6 @@
 
 #include "assembler/ast.h"
 
-DEF_FCC_IMPLE(Operands)
-
 void AST_write(AST* self, FILE* file) {
   self->write(self, file);
 }
@@ -16,10 +14,10 @@ static void Directive_write(AST* self, FILE* file) {
   AST* a;
 
   fprintf(file, "%s ", dire->name);
-  for(i = 0; i < FCC_len(dire->operands); i++) {
-    a = (AST*)FCC_get(dire->operands, i);
+  for(i = 0; i < dire->operands->len; i++) {
+    a = (AST*)Array_get(dire->operands, i);
     a->write(a, file);
-    if(i != FCC_len(dire->operands) - 1) fprintf(file, ", ");
+    if(i != dire->operands->len - 1) fprintf(file, ", ");
   }
   fprintf(file, "\n");
 }
@@ -43,12 +41,12 @@ static void Mnemonic_write(AST* self, FILE* file) {
   AST* a;
 
   fprintf(file, "  %s", mn->name);
-  for(i = 0; i < FCC_len(mn->operands); i++) {
+  for(i = 0; i < mn->operands->len; i++) {
     fprintf(file, " ");
-    a = (AST*)FCC_get(mn->operands, i);
+    a = (AST*)Array_get(mn->operands, i);
     if(is_numeric(a)) fprintf(file, "$");
     a->write(a, file);
-    if(i != FCC_len(mn->operands) - 1) fprintf(file, ",");
+    if(i != mn->operands->len - 1) fprintf(file, ",");
   }
   fprintf(file, "\n");
 }

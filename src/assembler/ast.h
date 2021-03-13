@@ -2,7 +2,7 @@
 #define __AST_H
 
 #include <stdio.h>
-#include "util/fcc.h"
+#include "util/array.h"
 
 #define IMPLEMENTS_AST \
   char type[255]; \
@@ -16,8 +16,6 @@ struct AST {
 
 void AST_write(AST* self, FILE* file);
 
-DEF_FCC(Operands)
-
 typedef struct Directive Directive;
 typedef struct Mnemonic Mnemonic;
 typedef struct Operand Operand;
@@ -29,13 +27,13 @@ typedef struct Register Register;
 
 struct Directive { IMPLEMENTS_AST
   char name[10];
-  Operands* operands;
+  Array* operands;
 };
 Directive* Directive_new();
 
 struct Mnemonic { IMPLEMENTS_AST
   char name[10];
-  Operands* operands;
+  Array* operands;
 };
 Mnemonic* Mnemonic_new();
 
