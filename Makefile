@@ -18,6 +18,7 @@ compiler_test: build_compiler_test
 
 build_compiler_test:
 	$(shell test ! -e bin && mkdir bin)
+	$(shell test ! -e test/out && mkdir test/out)
 	cd src/compiler; yacc -dv parser.y
 	cd src/compiler; lex tokenizer.l
 	g++ -lcriterion -I./src $(shell find ./src/compiler -name *.c | grep -vE 'main.c|y.tab.c|lex.yy.c') $(COMPILER_DIR)/y.tab.c $(COMPILER_DIR)/lex.yy.c src/util/*.c src/assembler/*.c test/compiler/*.cpp -o bin/compiler_test

@@ -10,12 +10,15 @@ static int is_node_type(const char* a, const char* b) {
   return strcmp(a, b) == 0;
 }
 
-// .global SYMBL
+// .global SYMBOL
 static Directive* globl(const char func_name[]) {
+  char tmp[255];
   Directive* self = Directive_new();
   self->operands = Array_create();
   strcpy(self->name, ".globl");
-  Array_add(self->operands, Symbol_new(func_name));
+  sprintf(tmp, "_%s", func_name);
+  puts(tmp);
+  Array_add(self->operands, Symbol_new(tmp));
   return self;
 }
 
@@ -53,17 +56,18 @@ static Mnemonic* mnemonic0(const char name[]) {
   return self;
 }
 
-void write_func(Func* func, Array* asms, FILE* file) {
+void write_func(Func* func, Array* asms) {
   int i;
   SymTable sym_table;
   VarSymbol var;
   BinaryExpression *be;
   Return *stmt;
-  char tmp[25];
+  char tmp[255];
 
   Array_add(asms, globl(func->name->value));
   Array_add(asms, func_p2align());
-  Array_add(asms, Label_new(func->name->value));
+  sprintf(tmp, "_%s", func->name->value);
+  Array_add(asms, Label_new(tmp));
   Array_add(asms, mnemonic1("pushq", (AST*)Register_new("rbp")));
   Array_add(asms, mnemonic2("movq", (AST*)Register_new("rsp"), (AST*)Register_new("rbp")));
 
@@ -107,7 +111,7 @@ void to_asm(Node** nodes, int size, char* file_name) {
 
   file = fopen(file_name, "w");
 
-  write_func((Func*)nodes[0], asms, file);
+  write_func((Func*)nodes[0], asms);
   for(i = 0; i < asms->len; i++) {
     AST_write((AST*)Array_get(asms, i), file);
   }

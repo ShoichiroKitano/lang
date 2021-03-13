@@ -1,6 +1,6 @@
-.globl add
+.globl _add
 .p2align 4, 0x90
-add:
+_add:
   pushq %rbp
   movq %rsp, %rbp
   movl $1, %eax
