@@ -19,9 +19,10 @@ Node* new_identifier(char *value) {
   return (Node*)node;
 }
 
-Node* new_func(Identifier* name, Args* args, Statements* body) {
+Node* new_func(Identifier* name, Identifier* type, Args* args, Statements* body) {
   NEW_NODE(Func)
   node->name = name;
+  node->type = type;
   node->args = args;
   node->body = body;
   return (Node*)node;

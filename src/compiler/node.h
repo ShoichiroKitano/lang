@@ -45,6 +45,7 @@ def_node(Args,
 
 def_node(Func,
     Identifier* name;
+    Identifier* type;
     Args* args;
     Statements* body;
     );
@@ -55,7 +56,7 @@ def_node(Return,
 
 Node* new_ivalue(int value);
 Node* new_identifier(char *value);
-Node* new_func(Identifier* name, Args* args, Statements* statements);
+Node* new_func(Identifier* name, Identifier* type, Args* args, Statements* statements);
 Node* new_arg(Identifier* type, Identifier* variable);
 Node* new_binary_op(Node* left, int operator_sim, Node* right);
 Node* new_args();

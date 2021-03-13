@@ -23,8 +23,8 @@ extern int yyerror(char const *str);
 
 %%
 compilation_unit
-  : DEF IDENTIFIER '(' args ')' '{' statements '}' {
-    nodes[0] = new_func((Identifier*)$2, (Args*)$4, (Statements*)$7);
+  : DEF IDENTIFIER '(' args ')' IDENTIFIER '{' statements '}' {
+    nodes[0] = new_func((Identifier*)$2, (Identifier*)$6, (Args*)$4, (Statements*)$8);
   }
 
 statements
