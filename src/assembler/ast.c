@@ -16,10 +16,10 @@ static void Directive_write(AST* self, FILE* file) {
   AST* a;
 
   fprintf(file, "%s ", dire->name);
-  for(i = 0; i < Operands_len(dire->operands); i++) {
-    a = (AST*)Operands_get(dire->operands, i);
+  for(i = 0; i < FCC_len(dire->operands); i++) {
+    a = (AST*)FCC_get(dire->operands, i);
     a->write(a, file);
-    if(i != Operands_len(dire->operands) - 1) fprintf(file, ", ");
+    if(i != FCC_len(dire->operands) - 1) fprintf(file, ", ");
   }
   fprintf(file, "\n");
 }
@@ -43,12 +43,12 @@ static void Mnemonic_write(AST* self, FILE* file) {
   AST* a;
 
   fprintf(file, "  %s", mn->name);
-  for(i = 0; i < Operands_len(mn->operands); i++) {
+  for(i = 0; i < FCC_len(mn->operands); i++) {
     fprintf(file, " ");
-    a = (AST*)Operands_get(mn->operands, i);
+    a = (AST*)FCC_get(mn->operands, i);
     if(is_numeric(a)) fprintf(file, "$");
     a->write(a, file);
-    if(i != Operands_len(mn->operands) - 1) fprintf(file, ",");
+    if(i != FCC_len(mn->operands) - 1) fprintf(file, ",");
   }
   fprintf(file, "\n");
 }

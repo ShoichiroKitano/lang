@@ -10,7 +10,7 @@ Array* Array_new(int cap) {
 }
 
 Array* create_array() {
-  return Array_new(255);
+  return Array_new(1);
 }
 
 void Array_destroy(Array* self) {
