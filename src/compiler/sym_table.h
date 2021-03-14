@@ -13,3 +13,6 @@ typedef struct {
 } SymTable;
 
 #endif
+
+int SymTable_stack_offset(SymTable tbl, const char var[]);
+int SymTable_stack_flame_size(SymTable tbl);

@@ -1,3 +1,7 @@
-def add(Int x, Int y) Int {
+def add1(Int x, Int y) Int {
   return 1 + 2
+}
+
+def add2(Int x, Int y) Int {
+  return x + y
 }

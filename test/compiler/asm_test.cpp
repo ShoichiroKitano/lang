@@ -6,6 +6,7 @@
 #include <criterion/criterion.h>
 #include <stdio.h>
 #include "compiler/asm.h"
+#include "compiler/node.h"
 
 int yyparse();
 extern FILE *yyin;
@@ -23,9 +24,10 @@ void assert_file(const char actual[], const char expect[]) {
 Test(to_asm, add) {
   char out[] = "./test/out/add.s";
   yyin = fopen("./test/fixture/compiler/add.kl", "r");
+  node_length = 0;
   yyparse();
 
-  to_asm(nodes, 1, out);
+  to_asm(nodes, node_length, out);
 
   assert_file(out, "./test/fixture/compiler/add_expect.s");
 }

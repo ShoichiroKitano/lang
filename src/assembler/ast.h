@@ -14,8 +14,6 @@ struct AST {
   void (*write)(AST* self, FILE *file);
 };
 
-void AST_write(AST* self, FILE* file);
-
 typedef struct Directive Directive;
 typedef struct Mnemonic Mnemonic;
 typedef struct Operand Operand;
@@ -24,42 +22,51 @@ typedef struct IntIm IntIm;
 typedef struct HexIm HexIm;
 typedef struct Label Label;
 typedef struct Register Register;
+typedef struct Offset Offset;
 
 struct Directive { IMPLEMENTS_AST
   char name[10];
   Array* operands;
 };
-Directive* Directive_new();
 
 struct Mnemonic { IMPLEMENTS_AST
   char name[10];
   Array* operands;
 };
-Mnemonic* Mnemonic_new();
 
 struct Symbol { IMPLEMENTS_AST
   char value[255];
 };
-Symbol* Symbol_new(const char value[]);
 
 struct IntIm { IMPLEMENTS_AST
   char value[255];
 };
-IntIm* IntIm_new(const char value[]);
 
 struct HexIm { IMPLEMENTS_AST
   char value[255];
 };
-HexIm* HexIm_new(const char value[]);
 
 struct Label { IMPLEMENTS_AST
   char value[255];
 };
-Label* Label_new(const char value[]);
 
 struct Register { IMPLEMENTS_AST
   char value[255];
 };
-Register* Register_new(const char value[]);
+
+struct Offset  { IMPLEMENTS_AST
+  char value[255];
+  Register* reg;
+};
 
 #endif
+
+void AST_write(AST* self, FILE* file);
+Offset* Offset_new(const char value[], Register *reg);
+Register* Register_new(const char value[]);
+Label* Label_new(const char value[]);
+HexIm* HexIm_new(const char value[]);
+IntIm* IntIm_new(const char value[]);
+Symbol* Symbol_new(const char value[]);
+Mnemonic* Mnemonic_new();
+Directive* Directive_new();

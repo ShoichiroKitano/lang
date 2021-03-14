@@ -8,6 +8,7 @@ extern FILE *yyin;
 
 int main() {
   yyin = fopen("test.kl", "r");
+  node_length = 0;
   if (yyparse()) {
       fprintf(stderr, "Error ! Error ! Error !\n");
       exit(1);

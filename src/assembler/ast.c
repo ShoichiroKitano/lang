@@ -116,3 +116,19 @@ Register* Register_new(const char value[]) {
   strcpy(self->value, value);
   return self;
 }
+
+static void Offset_write(AST* self, FILE* file) {
+  Offset* o = (Offset*) self;
+  fprintf(file, "%s(", o->value);
+  o->reg->write((AST*)o->reg, file);
+  fprintf(file, ")");
+}
+
+Offset* Offset_new(const char value[], Register* reg) {
+  Offset* self = (Offset*)malloc(sizeof(Offset));
+  strcpy(self->type, "Offset");
+  self->write = Offset_write;
+  strcpy(self->value, value);
+  self->reg = reg;
+  return self;
+}

@@ -17,7 +17,6 @@ static Directive* globl(const char func_name[]) {
   self->operands = Array_create();
   strcpy(self->name, ".globl");
   sprintf(tmp, "_%s", func_name);
-  puts(tmp);
   Array_add(self->operands, Symbol_new(tmp));
   return self;
 }
@@ -56,7 +55,7 @@ static Mnemonic* mnemonic0(const char name[]) {
   return self;
 }
 
-void write_func(Func* func, Array* asms) {
+void add_func(Func* func, Array* asms) {
   int i;
   SymTable sym_table;
   VarSymbol var;
@@ -81,18 +80,39 @@ void write_func(Func* func, Array* asms) {
     sym_table.vsyms_length++;
   }
 
+  // TODO: 引数を使わない場合は実行しない
+  sprintf(tmp, "%d", SymTable_stack_flame_size(sym_table));
+  Array_add(asms, mnemonic2("subq", (AST*)IntIm_new(tmp), (AST*)Register_new("rsp")));
+  for(i = 0; i < sym_table.vsyms_length; i++) {
+    if(sym_table.vsyms[i].declared_position == 0) {
+      sprintf(tmp, "%d", SymTable_stack_offset(sym_table, sym_table.vsyms[i].name));
+      if(i == 0) Array_add(asms, mnemonic2("movl", (AST*)Register_new("edi"), (AST*)Offset_new(tmp, Register_new("rbp"))));
+      if(i == 1) Array_add(asms, mnemonic2("movl", (AST*)Register_new("esi"), (AST*)Offset_new(tmp, Register_new("rbp"))));
+    }
+  }
+
   //ローカル変数をテーブルに追加
 
   for(i = 0; i < func->body->length; i++) {
-    if(is_node_type(func->body->statements[i]->node_type, "Return")) {
+    if(is_node_type("Return", func->body->statements[i]->node_type)) {
       stmt = (Return*) func->body->statements[i];
 
-      if(is_node_type(stmt->return_value->node_type, "BinaryExpression")) {
+      if(is_node_type("BinaryExpression", stmt->return_value->node_type)) {
         be = (BinaryExpression*) stmt->return_value;
-        sprintf(tmp, "%d", ((IValue *)(be->left))->value);
-        Array_add(asms, mnemonic2("movl", (AST*)IntIm_new(tmp), (AST*)Register_new("eax")));
-        sprintf(tmp, "%d", ((IValue *)(be->right))->value);
-        Array_add(asms, mnemonic2("addl", (AST*)IntIm_new(tmp), (AST*)Register_new("eax")));
+        if(is_node_type("IValue", be->left->node_type)) {
+          sprintf(tmp, "%d", ((IValue *)(be->left))->value);
+          Array_add(asms, mnemonic2("movl", (AST*)IntIm_new(tmp), (AST*)Register_new("eax")));
+        } else { // Identifier
+          sprintf(tmp, "%d", SymTable_stack_offset(sym_table, ((Identifier*)(be->left))->value));
+          Array_add(asms, mnemonic2("movl", (AST*)Offset_new(tmp, Register_new("rbp")), (AST*)Register_new("eax")));
+        }
+        if(is_node_type("IValue", be->left->node_type)) {
+          sprintf(tmp, "%d", ((IValue *)(be->right))->value);
+          Array_add(asms, mnemonic2("addl", (AST*)IntIm_new(tmp), (AST*)Register_new("eax")));
+        } else {
+          sprintf(tmp, "%d", SymTable_stack_offset(sym_table, ((Identifier*)(be->right))->value));
+          Array_add(asms, mnemonic2("addl", (AST*)Offset_new(tmp, Register_new("rbp")), (AST*)Register_new("eax")));
+        }
       } else {
         printf("return value fail %s\n", func->body->statements[i]->node_type);
       }
@@ -104,14 +124,24 @@ void write_func(Func* func, Array* asms) {
   }
 }
 
-void to_asm(Node** nodes, int size, char* file_name) {
+static void write_empty_line(AST* ast, FILE* file) {
+  fprintf(file, "\n");
+}
+
+void to_asm(Node** nodes, int node_length, char* file_name) {
   FILE *file;
   int i;
   Array* asms = Array_create();
+  AST dummy;
+  dummy.write = write_empty_line;
 
   file = fopen(file_name, "w");
 
-  write_func((Func*)nodes[0], asms);
+  for(i = 0; i < node_length; i++) {
+    add_func((Func*)nodes[i], asms);
+    if(i != (node_length - 1)) Array_add(asms, &dummy);
+  }
+
   for(i = 0; i < asms->len; i++) {
     AST_write((AST*)Array_get(asms, i), file);
   }

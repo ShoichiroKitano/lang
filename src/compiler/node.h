@@ -11,9 +11,6 @@ typedef struct {
   char node_type[255];
 } Node;
 
-//typedef void* Node;
-extern Node* nodes[255];
-
 def_node(Identifier,
     char value[255];
     );
@@ -54,6 +51,11 @@ def_node(Return,
     Node* return_value;
     );
 
+#endif
+
+extern Node* nodes[255];
+extern int node_length;
+
 Node* new_ivalue(int value);
 Node* new_identifier(char *value);
 Node* new_func(Identifier* name, Identifier* type, Args* args, Statements* statements);
@@ -66,4 +68,3 @@ void Statements_add(Statements* statements, Node* statement);
 void Args_add(Args* args, Arg* arg);
 void debug(Node* node);
 
-#endif

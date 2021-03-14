@@ -6,6 +6,7 @@
   sscanf(#type, "%s", node->node_type);
 
 Node* nodes[255];
+int node_length;
 
 Node* new_ivalue(int value) {
   NEW_NODE(IValue)

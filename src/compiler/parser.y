@@ -17,14 +17,26 @@ extern int yyerror(char const *str);
 
 %token <node> INT_LITERAL
 %token <node> IDENTIFIER
-%type <node> statements statement arg args expression empty
+%type <node> statements statement arg args expression empty definitions definition
 %token DEF RETURN
 %token<op> ADD
 
 %%
-compilation_unit
+compilation_unit : definitions { /* empty */ }
+
+definitions
+  : definition {
+    nodes[node_length] = $1;
+    node_length++;
+  }
+  | definitions definition {
+    nodes[node_length] = $2;
+    node_length++;
+  }
+
+definition
   : DEF IDENTIFIER '(' args ')' IDENTIFIER '{' statements '}' {
-    nodes[0] = new_func((Identifier*)$2, (Identifier*)$6, (Args*)$4, (Statements*)$8);
+    $$ = (Node*)new_func((Identifier*)$2, (Identifier*)$6, (Args*)$4, (Statements*)$8);
   }
 
 statements
