@@ -8,6 +8,7 @@ _add1:
   movl %esi, -8(%rbp)
   movl $1, %eax
   addl $2, %eax
+  addq $16, %rsp
   popq %rbp
   retq
 
@@ -21,5 +22,6 @@ _add2:
   movl %esi, -8(%rbp)
   movl -4(%rbp), %eax
   addl -8(%rbp), %eax
+  addq $16, %rsp
   popq %rbp
   retq

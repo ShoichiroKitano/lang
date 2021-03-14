@@ -116,6 +116,11 @@ void add_func(Func* func, Array* asms) {
       } else {
         printf("return value fail %s\n", func->body->statements[i]->node_type);
       }
+
+      // TODO: 引数を使わない場合は実行しない
+      sprintf(tmp, "%d", SymTable_stack_flame_size(sym_table));
+      Array_add(asms, mnemonic2("addq", (AST*)IntIm_new(tmp), (AST*)Register_new("rsp")));
+
       Array_add(asms, mnemonic1("popq", (AST*)Register_new("rbp")));
       Array_add(asms, mnemonic0("retq"));
     } else {
