@@ -31,3 +31,14 @@ Test(to_asm, add) {
 
   assert_file(out, "./test/fixture/compiler/add_expect.s");
 }
+
+//Test(to_asm, object) {
+//  char out[] = "./test/out/object.s";
+//  yyin = fopen("./test/fixture/compiler/object.kl", "r");
+//  node_length = 0;
+//  yyparse();
+//
+//  to_asm(nodes, node_length, out);
+//
+//  assert_file(out, "./test/fixture/compiler/object_expect.s");
+//}

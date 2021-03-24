@@ -1,0 +1,11 @@
+class MyClass(Int x, Int y) {
+
+  def total() : Int {
+    return x + y
+  }
+}
+
+def call() {
+  myCalss = Myclass()
+  dump(myCalss.total())
+}
